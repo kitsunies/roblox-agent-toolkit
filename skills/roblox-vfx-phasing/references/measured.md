@@ -2,7 +2,7 @@
 
 Starting values for Roblox effects, as a data sheet. Sample: 49 effect files by experienced artists (5,010 ParticleEmitters, about 1,200 textures, their videos) plus a community kit of 1,108 textures. Medians unless marked; a range is the middle of the spread. Tune by eye at gameplay distance; these are not targets.
 
-Source: figures published in the Roqer project's VFX study (S4US/Roqer, AGPL-3.0). Only the numbers are used here, in our own structure and wording.
+Source: the measurement method and figures come from the Roqer project's VFX study (S4US/Roqer, AGPL-3.0). Only the facts are used here, in our own structure and wording; no Roqer text or code.
 
 ## Layer counts
 
