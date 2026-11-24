@@ -1,0 +1,33 @@
+# Copy to farm.toml in the directory you run the tools from (or point STUDIO_FARM_CONFIG at a copy).
+# Every key is optional except host and studio_mcp; the values below are the defaults where one exists.
+
+# ssh alias of the Windows host that runs Studio (OpenSSH server, key auth, an interactive desktop session).
+host = "studio-host"
+
+# argv that starts the official Studio MCP server over stdio. Here it runs on the host through ssh.
+studio_mcp = ["ssh", "-T", "-o", "BatchMode=yes", "-o", "ServerAliveInterval=15", "studio-host",
+              'cmd.exe /c %LOCALAPPDATA%\Roblox\mcp.bat']
+
+# argv that starts Chrrxs robloxstudio-mcp 3.5.0 on the host (harvest only). Its plugin must be installed there.
+chrrxs_mcp = ["ssh", "-T", "-o", "BatchMode=yes", "-o", "ServerAliveInterval=15", "studio-host",
+              "npx -y @chrrxs/robloxstudio-mcp@3.5.0"]
+
+# PowerShell string: where farm places are copied on the host.
+remote_dir = '$env:LOCALAPPDATA\Temp\studio-farm'
+
+# Local state (which instances this machine opened), relative to the working directory.
+state_dir = "build/studio-farm"
+
+# Rojo project file inside a project directory (probe --project, harvest).
+rojo_project = "default.project.json"
+
+# Room an open waits for: fewer Studio processes than max_studios and at least min_free_mb free memory.
+max_studios = 8
+min_free_mb = 4096
+queue_seconds = 900
+
+# Size of each farm Studio window, parked off screen (a minimized Studio renders nothing).
+window = [1180, 800]
+
+# Regexes for console errors that never fail a probe, matched against "<Server|Client> <message>".
+console_accept = []
