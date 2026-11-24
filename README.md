@@ -13,6 +13,7 @@ Contents:
 | `tools/studio_farm.py` | The Studio farm: throwaway Studio instances on a Windows host over SSH (open, probe, capture, close) |
 | `tools/farm_probe.py`, `tools/console_log.py`, `tools/probes/ui-audit.luau` | The probe job, its console gate and the UI audit |
 | `tools/harvest.py`, `tools/splice.luau` | Bring work done in a farm Studio back into a Rojo project |
+| `tools/measure.py` | Judge captured effect frames (tone), particle and beam textures, and reference clips |
 | `luau/FxClock.luau` | Drop-in effect clock that lets `probe --moments` hold an effect at exact times |
 | `skills/` | Ten agent skills for building, feel, VFX, UI, design and Studio operation |
 | `hooks/studio-mcp-guard.py` | Optional PreToolUse hook that guards Studio MCP calls |
@@ -24,7 +25,8 @@ Contents:
 - The official Studio MCP server, startable as a stdio command (`studio_mcp` in the config).
 - Chrrxs robloxstudio-mcp 3.5.0 and its Studio plugin on the host (harvest only). The plugin talks to the bridge on
   port 58741, and only one plugin can hold port 58741 per Studio: do not install another plugin that uses it.
-- On the machine running the tools: Python 3.11+, `ssh` and `scp`; Pillow 10.1+ for `probe`;
+- On the machine running the tools: Python 3.11+, `ssh` and `scp`; Pillow 10.1+ for `probe` and `measure`
+  (ffmpeg optional, for `measure clip` on a video);
   [Rojo](https://rojo.space) 7.5+ for `probe --project` and harvest, plus [Lune](https://lune-org.github.io/lune/)
   for harvest (`rokit.toml` pins both). `reap` reads `/proc`, so it needs Linux.
 
@@ -73,6 +75,26 @@ python3 $T/harvest.py apply --tag fx-pass
 Probe scripts are plain Luau run with `execute_luau`; each starts with `local CONFIG = { tag = ..., phase = "run" }`
 (see `tools/farm_probe.py` for the `frame` and `expect` phases). Captures land in `build/probes` as PNG plus a JSON
 sidecar. For `--moments`, copy `luau/FxClock.luau` into your game and step effects through it.
+
+## Measure
+
+`tools/measure.py` judges effect captures, textures and reference clips. It prints JSON and exits 0 when clean, 1 when
+it raises a flag, 2 on a usage error. Thresholds are named constants at the top of the file: those from
+`skills/roblox-vfx-phasing/references/measured.md` say so, the rest give their reason.
+
+```sh
+# Captured moments: washed out (pale share over 40%), blown out (clipped white) or flat. --base is the same view
+# without the effect, so only the pixels the effect changed are measured.
+python3 $T/measure.py tone build/probes/explosion-1280x720-m*.png --base build/probes/empty-1280x720.png
+
+# Textures: power-of-two and 1024 cap, real alpha or black-background additive, plus per kind: line brightness,
+# tile seams, ring evenness, flipbook grid (2x2, 4x4, 8x8; found from clean cell borders) and wasted frames.
+python3 $T/measure.py texture --kind flipbook assets/fx/fireball-4x4.png
+
+# A reference clip (video through ffmpeg, skipped without it; or a frame directory with --fps): onset, flash,
+# time to half and to gone after the flash, colours at each beat, tone at the flash and any second ignition.
+python3 $T/measure.py clip refs/explosion.mp4
+```
 
 ## Skills
 

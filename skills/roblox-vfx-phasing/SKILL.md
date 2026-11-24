@@ -72,6 +72,6 @@ Record the frame time beside each budget you settle on.
 2. Build the contact silhouette; capture it; confirm the read.
 3. Add peak and fade layers one at a time, each with one job.
 4. Pool emitters and sounds; add cooldowns.
-5. Capture at gameplay distance on phone and desktop, scrub frame by frame, then count particles and frame time against the budget. With this toolkit: step the effect's clock through `luau/FxClock.luau` and capture exact beats with `tools/studio_farm.py probe --moments t1,t2,... --hide-gui`, then compare the frames against [references/measured.md](references/measured.md).
+5. Capture at gameplay distance on phone and desktop, scrub frame by frame, then count particles and frame time against the budget. With this toolkit: step the effect's clock through `luau/FxClock.luau` and capture exact beats with `tools/studio_farm.py probe --moments t1,t2,... --hide-gui`, then compare the frames against [references/measured.md](references/measured.md). `tools/measure.py tone`, `texture` and `clip` check captures, textures and reference clips against those figures.
 
 Sources: "warning, contact, peak, fade" and "silhouette before particles" restated in our own words from tabooharmony/roblox-brain roblox-animation-vfx (MIT, commit ceee4aa). "Judge effects frame by frame in readable phases" is an idea credited to SyphoDev-yt/roblox-ai-skills roblox-vfx (custom licence; idea only, no text copied). Layer list, smoke rule and debris cap from our own reference analysis and shipped game code.
